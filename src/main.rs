@@ -1,14 +1,21 @@
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
+use sdl2::render::WindowCanvas;
 use std::time::Duration;
 
-pub fn main() {
-    let sdl_context = sdl2::init().unwrap();
-    let video_subsystem = sdl_context.video().unwrap();
+fn render(canvas: &mut WindowCanvas, color: Color) {
+    canvas.set_draw_color(color);
+    canvas.clear();
+    canvas.present();
+}
+
+fn main() -> Result<(), String> {
+    let sdl_context = sdl2::init()?;
+    let video_subsystem = sdl_context.video()?;
 
     let window = video_subsystem
-        .window("rust-sdl2 demo", 800, 600)
+        .window("game study", 800, 600)
         .position_centered()
         .build()
         .unwrap();
