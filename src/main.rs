@@ -18,19 +18,13 @@ fn main() -> Result<(), String> {
         .window("game study", 800, 600)
         .position_centered()
         .build()
-        .unwrap();
+        .expect("video system init failure");
 
-    let mut canvas = window.into_canvas().build().unwrap();
-
-    canvas.set_draw_color(Color::RGB(0, 255, 255));
-    canvas.clear();
-    canvas.present();
-    let mut event_pump = sdl_context.event_pump().unwrap();
+    let mut canvas = window.into_canvas().build().expect("canvas build failure");
+    let mut event_pump = sdl_context.event_pump()?;
     let mut i = 0;
     'running: loop {
-        i = (i + 1) % 255;
-        canvas.set_draw_color(Color::RGB(i, 64, 255 - i));
-        canvas.clear();
+        // Events
         for event in event_pump.poll_iter() {
             match event {
                 Event::Quit { .. }
@@ -41,9 +35,15 @@ fn main() -> Result<(), String> {
                 _ => {}
             }
         }
-        // The rest of the game loop goes here...
+        // Update
+        i = (i + 1) % 255;
 
-        canvas.present();
+        // Render
+        render(&mut canvas, Color::RGB(i, 64, 255 - i));
+
+        // Time
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
     }
+
+    Ok(())
 }
